@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Webpage Example</title>
+</head>
+<body>
+  <form>
+    <label for="descriptionBox">Description </label>
+    <textarea id="descriptionBox" placeholder="Enter your description here"></textarea><br>
+    <label for="h3-input">Filername</label>
+    <input type="text" id="h3-input"><br>
+    <br>
+    <label for="h4-input">Filerstatus</label>
+    <input type="text" id="h4-input"><br>
+    <label for="h5-input">Ordertext </label>
+    <textarea id="h5-input" placeholder="Enter your description here"></textarea>
+    <br>
+    <button type="button" id="submit-button">Submit</button>
+    <button type="button" id="copy-button">Copy to Clipboard</button>
+    <button type="button" id="undo-button" disabled>Undo</button>
+    <button type="button" id="redo-button" disabled>Redo</button>
+  </form>
+  <br><br>
+  <div id="code">
+    <code> 
+      &lt;tr&gt;&lt;td&gt;Filername&lt;/td&gt;&lt;td&gt;Filerstatus&lt;/td&gt;&lt;td&gt;Ordertext&lt;/td&gt;&lt;/tr&gt;    </code>
+  </div>
+  <script>
+    const h3Input = document.getElementById("h3-input");
+    const h4Input = document.getElementById("h4-input");
+    const h5Input = document.getElementById("h5-input");
+    const h5Element = document.getElementById("h5-element");
+    const generateButton = document.getElementById("submit-button");
+    const copyButton = document.getElementById("copy-button");
+    const undoButton = document.getElementById("undo-button");
+    const redoButton = document.getElementById("redo-button");
+    const codeElement = document.getElementById("code");
+    let history = [{ code: codeElement.innerHTML, h3: h3Input.value, h4: h4Input.value }];
+    let current = 0;
+
+function updateInputs(code, h3, h4, h5) {
+  codeElement.innerHTML = code;
+  h3Input.value = h3;
+  h4Input.value = h4;
+  h5Input.value = h5;
+}
+
+function updateHistory(newCode, newH3, newH4, newH5) {
+  history = history.slice(0, current + 1);
+  history.push({ code: newCode, h3: newH3, h4: newH4, h5: newH5});
+  current = history.length - 1;
+  undoButton.disabled = false;
+  redoButton.disabled = true;
+}
+
+generateButton.addEventListener("click", () => {
+  const newCode = `<code>   &lt;tr&gt;&lt;td&gt;${h3Input.value}&lt;/td&gt;&lt;td&gt;${h4Input.value}&lt;/td&gt;&lt;td&gt;${h5Input.value}&lt;/td&gt;&lt;/tr&gt;
+</code>`;
+ 
+copyButton.addEventListener("click", () => {
+        const codeElement = document.getElementById("code");
+        const codeText = codeElement.textContent.trim();
+
+        navigator.clipboard.writeText(codeText)
+          .then(() => {
+            alert("Code copied to clipboard!");
+          })
+          .catch(() => {
+            alert("Failed to copy code to clipboard.");
+          });
+        });
+  const newH3 = h3Input.value;
+  const newH4 = h4Input.value;
+  const newH5 = h5Input.value;
+  updateHistory(newCode, newH3, newH4, newH5);
+  updateInputs(newCode, newH3, newH4, newH5);
+});
+
+undoButton.addEventListener("click", () => {
+  if (current > 0) {
+    current--;
+    const prevState = history[current];
+    updateInputs(prevState.code, prevState.h3, prevState.h4, prevState.h5);
+    undoButton.disabled = current === 0;
+    redoButton.disabled = false;
+  }
+});
+
+redoButton.addEventListener("click", () => {
+  if (current < history.length - 1) {
+    current++;
+    const nextState = history[current];
+    updateInputs(nextState.code, nextState.h3, nextState.h4, nextState.h5);
+    undoButton.disabled = false;
+    redoButton.disabled = current === history.length - 1;
+  }
+
+     
+});
+
+const form = document.querySelector('form');
+form.addEventListener('keydown', function(event) {
+  if (event.keyCode === 13) {
+    event.preventDefault(); // prevent the default Enter key behavior
+    document.getElementById('submit-button').click(); // trigger the submit button click event
+  }
+});
+  </script>
+  </body>
+  </html>
+<!--sample only-->
