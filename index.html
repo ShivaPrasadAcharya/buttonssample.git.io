@@ -1,16 +1,73 @@
+
 <!DOCTYPE html>
 <html>
 <head>
   <title>Dynamic Webpage Example</title>
-</head>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=pOvjY7gsllZ_o3QnlcKyG6l2zaRxYuMM9IXSlLuVqxNdJ1ajaryIeoanTp7tOkTckXD9DvJOHEqZNE8uu8LOv_zIW8rISrw4xmO2ugnwLWo" charset="UTF-8"></script></head>
+<style>
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  form div {
+    flex-basis: calc(100% - 10px);
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"],
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+
+  button {
+    margin-top: 20px;
+  }
+ #submit-button {
+background-color:green;
+
+  }
+  #developedby {
+             font-style: italic;
+             color: brown;
+        }
+
+        .link-container {
+             position: fixed;
+             top: 0%;
+             left: 0;
+             right: 0;
+             text-align: bottom;
+        }
+
+        /* Style for the links */
+        .link-container a {
+             color: rgba(255, 38, 0, 0.971);
+             text-decoration: none;
+             display: inline-block;
+             margin-right: 20px;
+             font-size: larger;
+        }
+</style>
 <body>
   <form>
     <label for="descriptionBox">Description </label>
     <textarea id="descriptionBox" placeholder="Enter your description here"></textarea><br>
-    <label for="h3-input">Filername</label>
+    <label for="h3-input">Applicant</label>
     <input type="text" id="h3-input"><br>
     <br>
-    <label for="h4-input">Filerstatus</label>
+    <label for="h4-input">Opponent</label>
     <input type="text" id="h4-input"><br>
     <label for="h5-input">Ordertext </label>
     <textarea id="h5-input" placeholder="Enter your description here"></textarea>
@@ -56,7 +113,7 @@ function updateHistory(newCode, newH3, newH4, newH5) {
 generateButton.addEventListener("click", () => {
   const newCode = `<code>   &lt;tr&gt;&lt;td&gt;${h3Input.value}&lt;/td&gt;&lt;td&gt;${h4Input.value}&lt;/td&gt;&lt;td&gt;${h5Input.value}&lt;/td&gt;&lt;/tr&gt;
 </code>`;
- 
+ //Copy to Clipboard//
 copyButton.addEventListener("click", () => {
         const codeElement = document.getElementById("code");
         const codeText = codeElement.textContent.trim();
@@ -69,6 +126,7 @@ copyButton.addEventListener("click", () => {
             alert("Failed to copy code to clipboard.");
           });
         });
+
   const newH3 = h3Input.value;
   const newH4 = h4Input.value;
   const newH5 = h5Input.value;
@@ -76,6 +134,7 @@ copyButton.addEventListener("click", () => {
   updateInputs(newCode, newH3, newH4, newH5);
 });
 
+//Undo button//
 undoButton.addEventListener("click", () => {
   if (current > 0) {
     current--;
@@ -85,7 +144,7 @@ undoButton.addEventListener("click", () => {
     redoButton.disabled = false;
   }
 });
-
+//Redo Button//
 redoButton.addEventListener("click", () => {
   if (current < history.length - 1) {
     current++;
@@ -97,15 +156,29 @@ redoButton.addEventListener("click", () => {
 
      
 });
-
+//Assigning Enter Key for Submission and shift Enter for new line//
 const form = document.querySelector('form');
 form.addEventListener('keydown', function(event) {
-  if (event.keyCode === 13) {
+  if (event.keyCode === 13 && !event.shiftKey) { // check if Enter key is pressed without Shift key
     event.preventDefault(); // prevent the default Enter key behavior
     document.getElementById('submit-button').click(); // trigger the submit button click event
   }
+  else if (event.keyCode === 13 && event.shiftKey) { // check if Enter key is pressed with Shift key
+    // do nothing as Shift+Enter acts as default Enter key
+  }
 });
+
+//Autofill//
+descriptionBox.addEventListener("change", () => {
+  const lines = descriptionBox.value.split("\n");
+  if (lines.length >= 3) {
+    h3Input.value = lines[0].trim();
+    h4Input.value = lines[1].trim();
+    h5Input.value = lines.slice(2).join("\n").trim();
+  }
+});
+
   </script>
   </body>
   </html>
-<!--sample only-->
+<!--sample with submit, submit- autofill, copy to clipboard, undo, redo  only-->
